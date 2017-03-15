@@ -50,7 +50,8 @@ namespace CSharp7
         [TestMethod]
         public void ValueTuple_GivenTuple_VariableDeclarationWithVarAgainstTuple()
         {
-            var (directoryName, fileName, extension) = PathInfo.SplitPath(@"\\test\unc\path\to\something\.ext");
+            var (directoryName, fileName, extension) = 
+                PathInfo.SplitPath(@"\\test\unc\path\to\something.ext");
 
             Assert.AreEqual<string>(
                 @"\\test\unc\path\to", directoryName);
@@ -60,7 +61,8 @@ namespace CSharp7
                 ".ext", extension);
 
             Assert.AreEqual<(string, string, string)>(
-                (@"\\test\unc\path\to", "something", ".ext"), (directoryName, fileName, extension));
+                (@"\\test\unc\path\to", "something", ".ext"),
+                (directoryName, fileName, extension));
         }
 
         [TestMethod]

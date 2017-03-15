@@ -108,7 +108,7 @@ Warning CS1701: Assuming assembly reference 'mscorlib, Version=2.0.0.0, Culture=
             {
                 switch(storage)
                 {
-                    //case Storage tempStorage:
+                    //case Storage tempStorage when true:
                     //    throw new Exception();
                     //    break;
                     case UsbKey usbKey when usbKey.IsPluggedIn:
