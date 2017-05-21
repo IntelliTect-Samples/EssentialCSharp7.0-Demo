@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -24,6 +25,13 @@ namespace CSharp7
             extension = Extension;
         }
 
+        public void Deconstruct(
+            out string directoryName,
+            out string fileName)
+        {
+            directoryName = DirectoryName;
+            fileName = FileName;
+        }
         #region Single parameter constructors are not supported as deconstructors
         public void Deconstruct(out string path)
         {

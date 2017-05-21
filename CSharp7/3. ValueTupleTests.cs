@@ -31,7 +31,7 @@ namespace CSharp7
         }
         // ERROR: You can't override by return values - even on Tuples :)
         /*
-        public (string PathRoot, string DirectoryName, string FileNameWithoutExtension)
+        public (string PathRoot, string DirectoryName, string FileNameWithoutExtension, string Extension)
             SplitPath(string path)
         {
             return (
