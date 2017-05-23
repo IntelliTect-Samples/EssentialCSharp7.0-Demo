@@ -6,6 +6,7 @@ using System.Reflection;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Emit;
+using Microsoft.Extensions.DependencyModel;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 // Referenced: http://www.tugberkugurlu.com/archive/compiling-c-sharp-code-into-memory-and-executing-it-with-roslyn
@@ -54,6 +55,40 @@ namespace CSharp7
             ", expectedErrorsText);
         }
 
+        private static MetadataReference CreateMetadataReference(string path)
+        {
+            using (var stream = File.OpenRead(path))
+            {
+                var moduleMetadata = ModuleMetadata.CreateFromStream(stream, System.Reflection.PortableExecutable.PEStreamOptions.PrefetchMetadata);
+                var assemblyMetadata = AssemblyMetadata.Create(moduleMetadata);
+
+                return assemblyMetadata.GetReference(filePath: path);
+            }
+        }
+
+        private static List<MetadataReference> GetReferences()
+        {
+            var applicationAssembly = Assembly.GetExecutingAssembly();
+            var dependencyContext = DependencyContext.Load(applicationAssembly);
+            var references = dependencyContext
+                ?.CompileLibraries
+                .SelectMany(library => library.ResolveReferencePaths())
+                .ToList();
+
+            var libraryPaths = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            var metadataReferences = new List<MetadataReference>();
+            foreach (var path in references ?? Enumerable.Empty<string>())
+            {
+                if (libraryPaths.Add(path))
+                {
+                    var metadataReference = CreateMetadataReference(path);
+                    metadataReferences.Add(metadataReference);
+                }
+            }
+
+            return metadataReferences;
+        }
+
         public static void CodeFailCompilation(
             string code, string expectedErrorsText)
         {
@@ -71,18 +106,24 @@ namespace CSharp7
                 code , new CSharpParseOptions(kind: SourceCodeKind.Script)
             );
             string assemblyName = Path.GetRandomFileName();
-            MetadataReference[] references;
-            // Use the following in .NET Core
-            // See https://github.com/aspnet/Announcements/issues/149
-            /*
-            references =
-                DependencyContext.Default.CompileLibraries.SelectMany(
-                    item => item.ResolveReferencePaths()).Select(
-                    item => MetadataReference.CreateFromFile(item)).ToArray();
-            */
-            references = AppDomain.CurrentDomain.GetAssemblies().Select(
-                item => MetadataReference.CreateFromFile(item.Location, 
-                new MetadataReferenceProperties())).ToArray();
+
+            List<MetadataReference> references;
+
+            // FAILS: DependencyContext.Load returns null with .NET 4.6
+            //DependencyContext dependencyContext = DependencyContext.Load(
+            //        Assembly.GetExecutingAssembly());
+            //references = dependencyContext.CompileLibraries.SelectMany(
+            //        item => item.ResolveReferencePaths()).Select(
+            //        item => MetadataReference.CreateFromFile(item)).Cast< MetadataReference>().ToList();
+
+            references = (AppDomain.CurrentDomain.GetAssemblies().Select(
+                item => MetadataReference.CreateFromFile(item.Location,
+                new MetadataReferenceProperties()))).Cast<MetadataReference>().ToList();
+            //MetadataReference valueTupleReference = MetadataReference.CreateFromFile(typeof(ValueTuple).Assembly.Location);
+            // references.Add(valueTupleReference);
+
+            // IDIOSYNCRASY: https://github.com/dotnet/roslyn/issues/18775
+            references = references.Where(item => !item.Display.EndsWith($"{nameof(System.ValueTuple)}.dll")).ToList();
 
             CSharpCompilation compilation = CSharpCompilation.Create(
                 assemblyName,
@@ -92,6 +133,7 @@ namespace CSharp7
                     new CSharpCompilationOptions(
                         outputKind: OutputKind.DynamicallyLinkedLibrary
                         ));
+            //compilation.AddReferences(new MetadataReference(typeof(object).Assembly.Location));
             using (var ms = new MemoryStream())
             {
                 EmitResult result = compilation.Emit(ms);

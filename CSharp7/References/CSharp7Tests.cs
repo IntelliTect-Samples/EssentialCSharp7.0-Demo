@@ -54,7 +54,7 @@ namespace CSharp7
             CompilerAssert.StatementsFailCompilation(
             @"int.TryParse(""42"", out int result);
             int.TryParse(""42"", out int result);",
-            "Error CS0128: A local variable named 'result' is already defined in this scope");
+            "Error CS0128: A local variable or function named 'result' is already defined in this scope");
 
         }
         #endregion // Out Parameter Declaration
