@@ -163,21 +163,21 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="1. NumericLiteralsImproved.cs" />
-    <Compile Include="2. InlineOutVariableDeclaration.cs" />
-    <Compile Include="3. ValueTupleTests.cs" />
-    <Compile Include="4. DeconstructorTests.cs" />
-    <Compile Include="5. PatternMatchingTests.cs" />
-    <Compile Include="6. ExpressionBodiedMembers.cs" />
-    <Compile Include="7. ThrowExpressionTests.cs" />
-    <Compile Include="8. CustomAsyncReturn.cs" />
-    <Compile Include="9. ReturnByReferenceTests.cs" />
+    <Compile Include="00.PathInfo.cs" />
+    <Compile Include="01.NumericLiteralsImproved.cs" />
+    <Compile Include="02.InlineOutVariableDeclaration.cs" />
+    <Compile Include="03.ValueTupleTests.cs" />
+    <Compile Include="04.DeconstructorTests.cs" />
+    <Compile Include="05.LocalFunctionTests.cs" />    
+    <Compile Include="06.PatternMatchingTests.cs" />
+    <Compile Include="07.ExpressionBodiedMembers.cs" />
+    <Compile Include="08.ThrowExpressionTests.cs" />
+    <Compile Include="09.CustomAsyncReturn.cs" />
+    <Compile Include="10.ReturnByReferenceTests.cs" />
     <Compile Include="References\CompilerAssert.cs" />
     <Compile Include="References\Cryptographer.cs" />
     <Compile Include="References\CSharp7Tests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="4. LocalFunctionTests.cs" />
-    <Compile Include="_. PathInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
