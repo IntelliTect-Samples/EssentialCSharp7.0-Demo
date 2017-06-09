@@ -22,7 +22,7 @@ namespace CSharp7
     public class InlineOutVariableDeclaration
     {
         [TestMethod]
-        public void Deconstruct_GivenFileNamePathInfo_SeparateDirectoryNameFileNameExtension1()
+        public void DeclareOutParameters_InvokeMethod()
         {
             string directoryName, fileName, extension;
 
@@ -38,7 +38,7 @@ namespace CSharp7
         }
 
         [TestMethod]
-        public void Deconstruct_GivenFileNamePathInfo_SeparateDirectoryNameFileNameExtension2()
+        public void DeclareOutParametersInlineWithInvocation()
         {
             // E.g. 1: Out inline declaration and assignment
             PathInfo.SplitPath(@"\\test\unc\path\to\something.ext",
@@ -47,6 +47,19 @@ namespace CSharp7
                 out string extension);
 
             Assert.AreEqual<string>(@"\\test\unc\path\to", directoryName);
+            Assert.AreEqual<string>("something", fileName);
+            Assert.AreEqual<string>(".ext", extension);
+        }
+
+        [TestMethod]
+        public void DiscardOutParametersWithInvocation()
+        {
+            // E.g. 1: Out inline declaration and assignment
+            PathInfo.SplitPath(@"\\test\unc\path\to\something.ext",
+                out string _,
+                out string fileName,
+                out string extension);
+
             Assert.AreEqual<string>("something", fileName);
             Assert.AreEqual<string>(".ext", extension);
         }

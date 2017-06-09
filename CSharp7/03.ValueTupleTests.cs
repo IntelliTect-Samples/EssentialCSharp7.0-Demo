@@ -29,6 +29,7 @@ namespace CSharp7
             (DirectoryName, FileName, Extension) =
                 (directoryName, fileName, extension);
         }
+
         // ERROR: You can't override by return values - even on Tuples :)
         /*
         public (string PathRoot, string DirectoryName, string FileNameWithoutExtension, string Extension)
@@ -63,6 +64,22 @@ namespace CSharp7
             Assert.AreEqual<(string, string, string)>(
                 (@"\\test\unc\path\to", "something", ".ext"),
                 (directoryName, fileName, extension));
+        }
+
+        [TestMethod]
+        public void ValueTuple_DiscardTupleItems()
+        {
+            var (_, fileName, extension) =
+                PathInfo.SplitPath(@"\\test\unc\path\to\something.ext");
+
+            Assert.AreEqual<string>(
+                "something", fileName);
+            Assert.AreEqual<string>(
+                ".ext", extension);
+
+            Assert.AreEqual<(string, string)>(
+                ("something", ".ext"),
+                (fileName, extension));
         }
 
         [TestMethod]

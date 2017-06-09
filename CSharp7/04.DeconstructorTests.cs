@@ -24,14 +24,6 @@ namespace CSharp7
             fileName = FileName;
             extension = Extension;
         }
-
-        public void Deconstruct(
-            out string directoryName,
-            out string fileName)
-        {
-            directoryName = DirectoryName;
-            fileName = FileName;
-        }
         #region Single parameter constructors are not supported as deconstructors
         public void Deconstruct(out string path)
         {
@@ -48,6 +40,17 @@ namespace CSharp7
         #endregion Single parameter constructors are not supported as deconstructors
     }
 
+    public static class PathInfoEx
+    {
+        static public void Deconstruct(this PathInfo pathInfo,
+            out string directoryName,
+            out string fileName)
+        {
+            directoryName = pathInfo.DirectoryName;
+            fileName = pathInfo.FileName;
+        }
+    }
+
     [TestClass]
     public partial class PathInfoTests
     {
@@ -56,6 +59,13 @@ namespace CSharp7
             Assert.AreEqual<(string DirectoryName, string FileName, string Extension)>(
                 (@"\\test\unc\path\to", "something", ".ext"),
                 (directoryName, fileName, extension));
+        }
+
+        void VerifyExpectedValue(string directoryName, string fileName)
+        {
+            Assert.AreEqual<(string DirectoryName, string FileName)>(
+                (@"\\test\unc\path\to", "something"),
+                (directoryName, fileName));
         }
 
         [TestMethod]
@@ -69,7 +79,6 @@ namespace CSharp7
                     out string fileName,
                     out string extension);
 
-                (directoryName, fileName, extension) = pathInfo;
                 VerifyExpectedValue(directoryName, fileName, extension);
         }
 
@@ -79,8 +88,10 @@ namespace CSharp7
             PathInfo pathInfo = new PathInfo(@"\\test\unc\path\to\something.ext");
 
             string directoryName, fileName, extension = null;
+
             // E.g. 2: Deconstructing assignment
             (directoryName, fileName, extension) = pathInfo;
+
             VerifyExpectedValue(directoryName, fileName, extension);
         }
 
@@ -92,6 +103,53 @@ namespace CSharp7
             // E.g. 3: Deconstructing declaration and assignment with var
             var (directoryName, fileName, extension) = pathInfo;
             VerifyExpectedValue(directoryName, fileName, extension);
+        }
+
+        [TestMethod]
+        public void ChangeThing()
+        {
+            (string name, int number) thing = ("Inigo Montoya", 42);
+            thing.number++;
+            Assert.AreEqual<int>(43, thing.number);
+            Method(thing);
+            Assert.AreEqual<int>(43, thing.number);
+            Assert.AreEqual<string>("Inigo Montoya", thing.name);
+        }
+
+        void Method((string name, int number) thing)
+        {
+            thing.number++;
+            thing.name = "Inigo Montoya the 3rd";
+        }
+
+
+        [TestMethod]
+        public void ChangeThingWithRef()
+        {
+            (string name, int number) thing = ("Inigo Montoya", 42);
+            thing.number++;
+            Assert.AreEqual<int>(43, thing.number);
+            Method(ref thing);
+            Assert.AreEqual<int>(44, thing.number);
+            Assert.AreEqual<string>("Inigo Montoya the 3rd", thing.name);
+        }
+
+        void Method(ref (string name, int number) thing)
+        {
+            thing.number++;
+            thing.name = "Inigo Montoya the 3rd";
+        }
+
+
+
+
+        [TestMethod]
+        public void DeconstructExtensionMethod_CalledImplicitly_Success()
+        {
+            PathInfo pathInfo = new PathInfo(@"\\test\unc\path\to\something.ext");
+
+            (string directoryName, string fileName) = pathInfo;
+            VerifyExpectedValue(directoryName, fileName);
         }
 
         [TestMethod]

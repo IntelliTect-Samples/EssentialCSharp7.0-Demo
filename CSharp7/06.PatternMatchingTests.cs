@@ -68,7 +68,7 @@ namespace CSharp7
             {
                 if (storage is null)
                 {
-                    throw new ArgumentNullException();
+                    throw new ArgumentNullException(nameof(storage));
                 }
                 if ((storage is UsbKey usbDrive) &&
                     usbDrive.IsPluggedIn)

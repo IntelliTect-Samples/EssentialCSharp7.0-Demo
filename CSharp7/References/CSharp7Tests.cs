@@ -14,7 +14,7 @@ namespace CSharp7
         // Confirm C# 7.0 is active digit separator
         long MaxInt64 { get; } = 9_223_372_036_854_775_807;  // Equivalent to long.MaxValue
 
-        (int Height, int Width, int Length) DefaultCubeSize = (1, 2, 3);  // Tuples
+        public (int Height, int Width, int _) DefaultCubeSize = (1, 2, 3);  // Tuples
 
         #region Out Parameter Declaration
         public long DivideWithRemainder(

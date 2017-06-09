@@ -20,6 +20,9 @@
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(CSharpVersion)'=='7.1'">
+    <LangVersion>7.1</LangVersion>
+  </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
@@ -137,6 +140,11 @@
       </ItemGroup>
     </Otherwise>
   </Choose>
+  <ItemGroup Condition="'$(CSharpVersion)'=='7.1'">
+    <Compile Include="7.x\11.DefaultAbbreviation.cs" />
+    <Compile Include="7.x\12.AsyncMain.cs" />
+    <Compile Include="8.0\13.DefaultInterfaceImplementation.cs" />
+  </ItemGroup>
   <ItemGroup>
     <Compile Include="00.PathInfo.cs" />
     <Compile Include="01.NumericLiteralsImproved.cs" />
@@ -149,6 +157,7 @@
     <Compile Include="08.ThrowExpressionTests.cs" />
     <Compile Include="09.CustomAsyncReturn.cs" />
     <Compile Include="10.ReturnByReferenceTests.cs" />
+    <Compile Include="8.0\14.AsyncStreamsAndUsings.cs" />
     <Compile Include="References\CompilerAssert.cs" />
     <Compile Include="References\Cryptographer.cs" />
     <Compile Include="References\CSharp7Tests.cs" />

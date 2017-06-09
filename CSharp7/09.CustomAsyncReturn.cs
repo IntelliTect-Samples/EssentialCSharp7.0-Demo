@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace CSharp7
 {
     [TestClass]
-    public class CustomAsyncReturn
+    public partial class CustomAsyncReturn
     {
         public static async Task<string> Compress(string data)
         {
@@ -80,7 +80,7 @@ namespace CSharp7
             return sB.ToString();
         }
         
-        public async ValueTask<long> GetDirectorySizeAsync<T>(string path, string searchPattern)
+        public async ValueTask<long> GetDirectorySizeAsync(string path, string searchPattern)
         {
             if (!Directory.EnumerateFileSystemEntries(path, searchPattern).Any())
                 return 0;
